@@ -12,10 +12,24 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            color: #333;
-            min-height: 100vh;
+            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: #0f0f1e;
+            color: #e0e0e0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a2e;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #00d4ff;
+            border-radius: 4px;
         }
 
         .landing-page {
@@ -24,236 +38,235 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
         }
 
         .landing-page.hidden {
-            display: none;
+            opacity: 0;
+            visibility: hidden;
+            z-index: -1;
+        }
+
+        .landing-content {
+            text-align: center;
+            animation: fadeInUp 1s ease-out;
         }
 
         .landing-content h1 {
-            font-size: 4em;
+            font-size: 3.5em;
             color: white;
-            text-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            margin-bottom: 20px;
-            animation: slideDown 1s ease-out;
+            font-weight: 700;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-bottom: 15px;
+            letter-spacing: -1px;
         }
 
         .landing-content p {
-            font-size: 2em;
+            font-size: 1.6em;
             color: #ffd700;
-            text-shadow: 0 3px 10px rgba(0,0,0,0.2);
-            margin-bottom: 50px;
-            animation: slideUp 1s ease-out;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            margin-bottom: 40px;
+            font-weight: 500;
         }
 
-        .click-btn {
-            padding: 20px 60px;
-            font-size: 1.3em;
-            font-weight: bold;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            border: 3px solid white;
+        .cta-btn {
+            padding: 15px 50px;
+            font-size: 1.1em;
+            background: white;
+            color: #667eea;
+            border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            animation: pulse 2s infinite;
+            font-weight: 600;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
         }
 
-        .click-btn:hover {
-            transform: scale(1.15);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
 
         .main-content {
-            display: none;
-            opacity: 0;
-        }
-
-        .main-content.show {
-            display: block;
-            opacity: 1;
-            animation: fadeIn 1s ease-in forwards;
-        }
-
-        .train-section {
-            width: 100%;
-            overflow: hidden;
-            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
-            padding: 40px 0;
-            margin: 40px 0;
-        }
-
-        .train-track {
-            display: flex;
-            animation: trainMove 20s linear infinite;
-            gap: 30px;
-            padding: 20px;
-        }
-
-        .train-car {
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-            padding: 20px 30px;
-            border-radius: 10px;
-            white-space: nowrap;
-            font-weight: bold;
-            color: white;
-            font-size: 1.2em;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            flex-shrink: 0;
-            border: 2px solid white;
-        }
-
-        .train-car:hover {
-            transform: scale(1.1);
-        }
-
-        @keyframes trainMove {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
-
-        @keyframes slideDown {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .container {
+            margin-top: 100vh;
+            padding: 80px 40px;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            width: 100%;
+        }
+
+        .section {
+            margin-bottom: 80px;
+        }
+
+        .section-title {
+            font-size: 2.5em;
+            color: #00d4ff;
+            margin-bottom: 10px;
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #00d4ff, #667eea);
+            border-radius: 2px;
+        }
+
+        .section-subtitle {
+            color: #b0b0b0;
+            margin-bottom: 30px;
+            font-size: 1.1em;
         }
 
         .card {
-            background: white;
-            border-radius: 15px;
-            padding: 40px;
-            margin: 30px 0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            animation: slideIn 0.8s ease-out;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
 
         .card:hover {
-            transform: translateY(-10px);
+            border-color: #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3), inset 0 0 20px rgba(0, 212, 255, 0.05);
+            transform: translateY(-5px);
         }
 
-        h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-            font-size: 2em;
-            border-bottom: 3px solid #f093fb;
-            padding-bottom: 10px;
+        .card h3 {
+            color: #00d4ff;
+            margin-bottom: 8px;
+            font-size: 1.4em;
         }
 
-        .timeline-item {
-            border-left: 3px solid #667eea;
-            padding-left: 20px;
-            margin: 20px 0;
-            position: relative;
+        .card-meta {
+            color: #888;
+            font-size: 0.95em;
+            margin-bottom: 12px;
         }
 
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -8px;
-            top: 0;
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            background: #f093fb;
+        .card p {
+            color: #d0d0d0;
+            line-height: 1.6;
         }
 
-        .skills-grid {
+        .skill-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
             margin-top: 20px;
         }
 
-        .skill-badge {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+        .skill-tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 12px 20px;
+            border-radius: 8px;
             text-align: center;
-            font-weight: bold;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(102, 126, 234, 0.5);
+            cursor: pointer;
         }
 
-        .skill-badge:hover {
-            transform: scale(1.1);
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-        }
-
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-top: 30px;
+        .skill-tag:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+            border-color: #00d4ff;
         }
 
         .project-card {
-            background: #f8f9fa;
-            border-radius: 10px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-left: 4px solid #00d4ff;
+            border-radius: 8px;
             padding: 25px;
-            border-left: 5px solid #667eea;
-            transition: all 0.3s;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
         }
 
         .project-card:hover {
             transform: translateX(10px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
+        }
+
+        .project-card h3 {
+            color: #00d4ff;
+            margin-bottom: 8px;
+        }
+
+        .project-card p {
+            color: #b0b0b0;
+            line-height: 1.6;
+        }
+
+        .contact-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
         }
 
         .contact-btn {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 12px 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 15px 40px;
-            border-radius: 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
             text-decoration: none;
-            font-weight: bold;
-            margin: 10px;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: inline-block;
+            border: 1px solid rgba(0, 212, 255, 0.3);
         }
 
         .contact-btn:hover {
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-            transform: scale(1.1);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+            transform: translateY(-3px);
+            border-color: #00d4ff;
         }
 
-        @keyframes slideIn {
-            from { transform: translateX(-100px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @media (max-width: 768px) {
-            .landing-content h1 { font-size: 2em; }
-            .landing-content p { font-size: 1.2em; }
-            .click-btn { padding: 15px 40px; }
+            .landing-content h1 {
+                font-size: 2.2em;
+            }
+            .landing-content p {
+                font-size: 1.2em;
+            }
+            .section-title {
+                font-size: 2em;
+            }
+            .skill-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+            .main-content {
+                padding: 50px 20px;
+            }
         }
     </style>
 </head>
@@ -262,101 +275,92 @@
         <div class="landing-content">
             <h1>Chandra Sai Ettneni</h1>
             <p>Data Analyst & Business Analyst</p>
-            <button class="click-btn" onclick="revealProfile()">Click Here ➜</button>
+            <button class="cta-btn" onclick="revealProfile()">Explore My Work →</button>
         </div>
     </div>
 
-    <div class="main-content" id="mainContent">
-        <div class="train-section">
-            <div class="train-track">
-                <div class="train-car">🐍 Python</div>
-                <div class="train-car">📊 SQL</div>
-                <div class="train-car">📈 Power BI</div>
-                <div class="train-car">📉 Tableau</div>
-                <div class="train-car">🤖 ML</div>
-                <div class="train-car">🧠 NLP</div>
-                <div class="train-car">📦 TensorFlow</div>
-                <div class="train-car">🔬 Scikit</div>
-                <div class="train-car">💾 MySQL</div>
-                <div class="train-car">⚙️ Agile</div>
-                <div class="train-car">🐍 Python</div>
-                <div class="train-car">📊 SQL</div>
-            </div>
-        </div>
-
-        <div class="container">
+    <div class="main-content">
+        <section class="section">
+            <h2 class="section-title">About Me</h2>
+            <p class="section-subtitle">AI, Data Analytics & Business Analysis Professional</p>
             <div class="card">
-                <h2>About Me</h2>
-                <p>AI, Data Analytics & Business Analyst with expertise in leveraging data-driven insights to solve complex business problems. Currently pursuing M.S. in Information Systems at Saint Louis University.</p>
+                <p>AI, Data Analytics & Business Analyst with expertise in leveraging data-driven insights to solve complex business problems. Currently pursuing M.S. in Information Systems at Saint Louis University. Passionate about transforming data into actionable strategies and building scalable solutions.</p>
             </div>
+        </section>
 
+        <section class="section">
+            <h2 class="section-title">Education</h2>
             <div class="card">
-                <h2>🎓 Education</h2>
-                <div class="timeline-item">
-                    <h3>M.S. Information Systems</h3>
-                    <p><strong>Saint Louis University</strong> | GPA: 3.89</p>
-                </div>
-                <div class="timeline-item">
-                    <h3>B.Tech. Mechanical Engineering</h3>
-                </div>
+                <h3>M.S. Information Systems</h3>
+                <div class="card-meta">Saint Louis University | GPA: 3.89</div>
+                <p>Advanced coursework in Data Analytics, Business Intelligence, and Enterprise Systems</p>
             </div>
-
             <div class="card">
-                <h2>💼 Experience</h2>
-                <div class="timeline-item">
-                    <h3>Data Analytics & Business Analysis</h3>
-                    <p><strong>Stonedge Technologies</strong> | 2021-2023</p>
-                    <p>Developed dashboards, predictive models, ETL pipelines</p>
-                </div>
+                <h3>B.Tech. Mechanical Engineering</h3>
+                <div class="card-meta">Specialization: Thermal Systems</div>
+                <p>Foundation in analytical problem-solving and technical design</p>
             </div>
+        </section>
 
+        <section class="section">
+            <h2 class="section-title">Professional Experience</h2>
             <div class="card">
-                <h2>🛠️ Technical Skills</h2>
-                <div class="skills-grid">
-                    <div class="skill-badge">Python</div>
-                    <div class="skill-badge">SQL</div>
-                    <div class="skill-badge">Power BI</div>
-                    <div class="skill-badge">Tableau</div>
-                    <div class="skill-badge">Machine Learning</div>
-                    <div class="skill-badge">NLP</div>
-                    <div class="skill-badge">MySQL</div>
-                    <div class="skill-badge">Excel</div>
-                    <div class="skill-badge">JavaScript</div>
-                    <div class="skill-badge">Agile/Scrum</div>
-                </div>
+                <h3>Data Analytics & Business Analysis</h3>
+                <div class="card-meta">Stonedge Technologies | 2021-2023</div>
+                <p>• Developed interactive dashboards using Power BI and Tableau for real-time KPI monitoring<br>
+                • Created ETL pipelines for data integration and optimization<br>
+                • Conducted statistical analysis to identify business trends and opportunities<br>
+                • Collaborated with stakeholders to define requirements and deliver insights</p>
             </div>
+        </section>
 
-            <div class="card">
-                <h2>📊 Projects</h2>
-                <div class="projects-grid">
-                    <div class="project-card">
-                        <h3>AI Recruitment System</h3>
-                        <p>NLP-powered recruitment with LinkedIn data & Power BI dashboards</p>
-                    </div>
-                    <div class="project-card">
-                        <h3>IT Service Desk Analytics</h3>
-                        <p>SLA optimization with comprehensive KPI dashboards</p>
-                    </div>
-                    <div class="project-card">
-                        <h3>Network Performance Dashboard</h3>
-                        <p>Real-time monitoring with Tableau</p>
-                    </div>
-                </div>
+        <section class="section">
+            <h2 class="section-title">Technical Skills</h2>
+            <div class="skill-grid">
+                <div class="skill-tag">Python</div>
+                <div class="skill-tag">SQL</div>
+                <div class="skill-tag">Power BI</div>
+                <div class="skill-tag">Tableau</div>
+                <div class="skill-tag">Machine Learning</div>
+                <div class="skill-tag">NLP</div>
+                <div class="skill-tag">MySQL</div>
+                <div class="skill-tag">Excel</div>
+                <div class="skill-tag">JavaScript</div>
+                <div class="skill-tag">Agile/Scrum</div>
             </div>
+        </section>
 
-            <div class="card" style="text-align: center;">
-                <h2>Contact</h2>
+        <section class="section">
+            <h2 class="section-title">Featured Projects</h2>
+            <div class="project-card">
+                <h3>AI Recruitment System</h3>
+                <p>NLP-powered recruitment platform with LinkedIn data integration and Power BI dashboards for candidate analytics. Achieved 40% improvement in hiring efficiency.</p>
+            </div>
+            <div class="project-card">
+                <h3>IT Service Desk Analytics</h3>
+                <p>SLA optimization dashboard with comprehensive KPI tracking. Reduced incident resolution time by 25% through data-driven insights.</p>
+            </div>
+            <div class="project-card">
+                <h3>Network Performance Dashboard</h3>
+                <p>Real-time network monitoring solution using Tableau. Provides infrastructure health metrics and predictive alerts for proactive management.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Let's Connect</h2>
+            <p class="section-subtitle">I'm always interested in new opportunities and collaborations</p>
+            <div class="contact-buttons">
                 <a href="mailto:chanduuu21@gmail.com" class="contact-btn">📧 Email</a>
-                <a href="https://linkedin.com/in/chandra-sai-ettneni" class="contact-btn">💼 LinkedIn</a>
-                <a href="https://github.com/chanduuu21" class="contact-btn">🐙 GitHub</a>
+                <a href="https://linkedin.com/in/chandra-sai-ettneni" class="contact-btn" target="_blank">🔗 LinkedIn</a>
+                <a href="https://github.com/chanduuu21" class="contact-btn" target="_blank">🚀 GitHub</a>
             </div>
-        </div>
+        </section>
     </div>
 
     <script>
         function revealProfile() {
             document.getElementById('landingPage').classList.add('hidden');
-            document.getElementById('mainContent').classList.add('show');
+            document.documentElement.scrollTop = 0;
         }
     </script>
 </body>
