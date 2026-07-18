@@ -1,327 +1,893 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chandra Sai Ettneni - AI & Data Analyst</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --primary: #6366f1; --secondary: #8b5cf6; --accent: #ec4899;
-            --cyan: #06b6d4; --dark: #0f172a; --dark-light: #1e293b; --gray: #64748b;
-        }
-        body { font-family: 'Inter', sans-serif; background: var(--dark); color: #fff; overflow-x: hidden; }
-        
-        .welcome-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 10000; transition: opacity 0.8s, visibility 0.8s;
-        }
-        .welcome-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        .welcome-content { text-align: center; animation: fadeIn 1s; }
-        .welcome-name {
-            font-family: 'Poppins', sans-serif; font-size: 3.5rem; font-weight: 900;
-            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text; margin-bottom: 1rem;
-        }
-        .welcome-role { font-size: 1.3rem; color: var(--gray); margin-bottom: 3rem; }
-        .enter-btn {
-            padding: 1.2rem 3rem; font-size: 1.2rem; font-weight: 700;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: #fff; border: none; border-radius: 50px; cursor: pointer;
-            transition: all 0.3s; box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
-        }
-        .enter-btn:hover { transform: scale(1.05); }
-        
-        .loading-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: linear-gradient(135deg, var(--dark), var(--dark-light));
-            display: none; align-items: center; justify-content: center;
-            z-index: 9999; flex-direction: column;
-        }
-        .loading-screen.active { display: flex; }
-        .loading-screen.hidden { opacity: 0; visibility: hidden; }
-        .loading-logo { width: 120px; height: 120px; position: relative; margin-bottom: 2rem; }
-        .logo-outer {
-            position: absolute; width: 100%; height: 100%; border: 4px solid transparent;
-            border-radius: 50%; border-top-color: var(--primary);
-            border-right-color: var(--secondary); animation: spin 1.5s linear infinite;
-        }
-        .logo-inner {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 60px; height: 60px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 2rem; font-weight: 900; font-family: 'Poppins', sans-serif;
-        }
-        .loading-text {
-            margin-top: 1rem; font-size: 1.2rem; font-weight: 600;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        .main-content { opacity: 0; transition: opacity 1s; }
-        .main-content.visible { opacity: 1; }
-        
-        .hero {
-            min-height: 100vh; display: flex; align-items: center; justify-content: center;
-            background: linear-gradient(135deg, var(--dark), var(--dark-light));
-            position: relative;
-        }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 2; }
-        
-        nav {
-            position: fixed; top: 0; width: 100%;
-            background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px);
-            padding: 1.5rem 0; z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        nav .container { display: flex; justify-content: space-between; align-items: center; }
-        .logo {
-            font-size: 1.5rem; font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .nav-links { display: flex; gap: 2rem; list-style: none; }
-        .nav-links a { color: #fff; text-decoration: none; font-weight: 500; }
-        
-        .hero-content { text-align: center; padding-top: 100px; }
-        .hero-emoji { font-size: 4rem; margin-bottom: 1rem; }
-        .hero-subtitle {
-            color: var(--primary); font-size: 1rem; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 2px; margin-bottom: 1rem;
-        }
-        .hero-title { font-size: 3.5rem; font-weight: 800; margin-bottom: 1.5rem; font-family: 'Poppins'; }
-        .gradient-text {
-            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .hero-description { font-size: 1.2rem; color: var(--gray); max-width: 700px; margin: 0 auto 2.5rem; line-height: 1.8; }
-        
-        .cta-buttons { display: flex; gap: 1.5rem; justify-content: center; }
-        .btn {
-            padding: 1rem 2.5rem; border-radius: 50px; font-weight: 600;
-            text-decoration: none; transition: all 0.3s; display: inline-block;
-        }
-        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; }
-        .btn-primary:hover { transform: translateY(-3px); }
-        .btn-outline { border: 2px solid var(--primary); color: var(--primary); }
-        .btn-outline:hover { background: var(--primary); color: #fff; }
-        
-        section { padding: 6rem 0; }
-        .section-title { font-size: 2.5rem; font-weight: 800; text-align: center; margin-bottom: 3rem; font-family: 'Poppins'; }
-        .section-emoji { font-size: 2.5rem; margin-right: 1rem; }
-        
-        .about-content { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
-        .about-text p { color: var(--gray); line-height: 1.8; margin-bottom: 1.5rem; }
-        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 2rem; }
-        .stat-item {
-            text-align: center; padding: 2rem 1.5rem;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
-            border-radius: 20px; border: 2px solid rgba(99, 102, 241, 0.3);
-            transition: all 0.3s;
-        }
-        .stat-item:hover { transform: translateY(-5px); border-color: var(--primary); }
-        .stat-emoji { font-size: 2rem; margin-bottom: 0.5rem; }
-        .stat-number {
-            font-size: 2.5rem; font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .stat-label { color: var(--gray); margin-top: 0.5rem; }
-        
-        .skills-train-wrapper {
-            position: relative; overflow: hidden; padding: 3rem 0;
-            background: linear-gradient(90deg, var(--dark) 0%, var(--dark-light) 50%, var(--dark) 100%);
-            border-radius: 30px; margin: 2rem 0;
-        }
-        .skills-train { display: flex; gap: 2rem; animation: trainMove 30s linear infinite; }
-        @keyframes trainMove { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        
-        .skill-badge {
-            min-width: 200px; padding: 1.5rem 2rem;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
-            border: 2px solid rgba(99, 102, 241, 0.4); border-radius: 20px;
-            display: flex; flex-direction: column; align-items: center; gap: 1rem;
-            transition: all 0.3s;
-        }
-        .skill-badge:hover { transform: translateY(-10px); border-color: var(--primary); }
-        .skill-badge-icon { font-size: 2.5rem; }
-        .skill-badge-name { font-size: 1.1rem; font-weight: 700; color: #fff; }
-        .skill-badge-category { font-size: 0.85rem; color: var(--gray); text-transform: uppercase; }
-        
-        .contact-content { max-width: 600px; margin: 0 auto; text-align: center; }
-        .contact-info { display: flex; flex-direction: column; gap: 1.5rem; margin: 3rem 0; }
-        .contact-item {
-            display: flex; align-items: center; justify-content: center; gap: 1rem; padding: 1.5rem;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
-            border-radius: 15px; border: 2px solid rgba(99, 102, 241, 0.3);
-        }
-        .contact-icon { font-size: 2rem; }
-        .contact-text { color: var(--gray); }
-        .contact-text a { color: #fff; text-decoration: none; }
-        
-        footer { text-align: center; padding: 2rem; background: var(--dark-light); color: var(--gray); }
-        
-        @media (max-width: 768px) {
-            .welcome-name { font-size: 2rem; }
-            .hero-title { font-size: 2rem; }
-            .about-content { grid-template-columns: 1fr; }
-            .stats { grid-template-columns: 1fr; }
-            .nav-links { display: none; }
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chandrasai Ettneni | Data Engineer</title>
+  <meta name="description" content="Portfolio of Chandrasai Ettneni, a Data Engineer specializing in Python, SQL, PySpark, Airflow, Databricks, Snowflake, dbt, Kafka, and cloud data platforms.">
+  <meta name="theme-color" content="#08111f">
+  <link rel="canonical" href="https://chanduuu21.github.io/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Chandrasai Ettneni | Data Engineer">
+  <meta property="og:description" content="Production data pipelines, cloud platforms, analytics engineering, and trusted data products.">
+  <meta property="og:url" content="https://chanduuu21.github.io/">
+  <meta name="twitter:card" content="summary">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Chandrasai Ettneni",
+    "url": "https://chanduuu21.github.io/",
+    "email": "mailto:chandrasaiettneni@gmail.com",
+    "jobTitle": "Data Engineer",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "St. Louis",
+      "addressRegion": "MO",
+      "addressCountry": "US"
+    },
+    "alumniOf": {
+      "@type": "CollegeOrUniversity",
+      "name": "Saint Louis University"
+    },
+    "sameAs": [
+      "https://github.com/Chanduuu21",
+      "https://www.linkedin.com/in/chandrasai-ettneni/"
+    ]
+  }
+  </script>
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #08111f;
+      --surface: #0d1a2d;
+      --surface-2: #12233a;
+      --text: #eef5ff;
+      --muted: #9db0c8;
+      --line: rgba(164, 193, 226, 0.18);
+      --blue: #63b3ff;
+      --teal: #4ee0c1;
+      --gold: #ffd479;
+      --shadow: 0 22px 70px rgba(0, 0, 0, 0.34);
+      --radius: 22px;
+      --max: 1120px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 15% 5%, rgba(50, 126, 202, 0.22), transparent 31rem),
+        radial-gradient(circle at 92% 18%, rgba(44, 185, 158, 0.14), transparent 28rem),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 4px;
+    }
+
+    .skip-link {
+      position: fixed;
+      left: 1rem;
+      top: -5rem;
+      z-index: 100;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      background: var(--text);
+      color: var(--bg);
+      font-weight: 800;
+    }
+
+    .skip-link:focus {
+      top: 1rem;
+    }
+
+    .container {
+      width: min(calc(100% - 2.5rem), var(--max));
+      margin-inline: auto;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid var(--line);
+      background: rgba(8, 17, 31, 0.88);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.25rem;
+    }
+
+    .brand {
+      text-decoration: none;
+      font-weight: 850;
+      letter-spacing: -0.02em;
+    }
+
+    .brand span {
+      color: var(--teal);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.35rem;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.94rem;
+      font-weight: 700;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .menu-button {
+      display: none;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.55rem 0.75rem;
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+      font-weight: 800;
+    }
+
+    .hero {
+      padding: 7.5rem 0 5rem;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin: 0 0 1.4rem;
+      color: var(--teal);
+      font-size: 0.78rem;
+      font-weight: 850;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 28px;
+      height: 2px;
+      background: currentColor;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      max-width: 920px;
+      margin-bottom: 1.5rem;
+      font-size: clamp(3rem, 8vw, 6.6rem);
+      line-height: 0.98;
+      letter-spacing: -0.065em;
+    }
+
+    .gradient {
+      background: linear-gradient(95deg, var(--blue), var(--teal));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-copy {
+      max-width: 750px;
+      margin-bottom: 2rem;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 2vw, 1.3rem);
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      margin-bottom: 2.25rem;
+    }
+
+    .pill {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0.48rem 0.85rem;
+      background: rgba(18, 35, 58, 0.64);
+      color: #c9d9eb;
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0.75rem 1.15rem;
+      background: var(--surface);
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 800;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+      border-color: rgba(99, 179, 255, 0.6);
+      background: var(--surface-2);
+    }
+
+    .button.primary {
+      border-color: transparent;
+      background: linear-gradient(100deg, #58aef9, #38cdb0);
+      color: #04121d;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 5rem;
+    }
+
+    .metric {
+      min-height: 165px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      background: linear-gradient(150deg, rgba(18, 35, 58, 0.9), rgba(13, 26, 45, 0.72));
+      box-shadow: var(--shadow);
+    }
+
+    .metric strong {
+      display: block;
+      margin-bottom: 0.55rem;
+      color: var(--gold);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    .metric span {
+      color: var(--muted);
+    }
+
+    section {
+      padding: 5.5rem 0;
+      scroll-margin-top: 72px;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: 0.7fr 1.3fr;
+      gap: 3rem;
+      align-items: start;
+      margin-bottom: 2.4rem;
+    }
+
+    h2 {
+      margin-bottom: 0;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      line-height: 1.08;
+      letter-spacing: -0.045em;
+    }
+
+    .section-intro {
+      max-width: 700px;
+      color: var(--muted);
+      font-size: 1.06rem;
+    }
+
+    .stack-grid,
+    .work-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.6rem;
+      background: rgba(13, 26, 45, 0.76);
+    }
+
+    .card h3 {
+      margin-bottom: 0.65rem;
+      font-size: 1.15rem;
+    }
+
+    .card p {
+      margin-bottom: 0;
+      color: var(--muted);
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1.15rem;
+    }
+
+    .tag {
+      border-radius: 8px;
+      padding: 0.35rem 0.58rem;
+      background: rgba(99, 179, 255, 0.1);
+      color: #b9dcff;
+      font-size: 0.78rem;
+      font-weight: 750;
+    }
+
+    .timeline {
+      border-left: 1px solid var(--line);
+      margin-left: 0.55rem;
+      padding-left: 2rem;
+    }
+
+    .role {
+      position: relative;
+      padding: 0 0 3rem;
+    }
+
+    .role:last-child {
+      padding-bottom: 0;
+    }
+
+    .role::before {
+      content: "";
+      position: absolute;
+      left: calc(-2rem - 6px);
+      top: 0.48rem;
+      width: 11px;
+      height: 11px;
+      border: 3px solid var(--bg);
+      border-radius: 50%;
+      background: var(--teal);
+      box-shadow: 0 0 0 1px var(--teal);
+    }
+
+    .role-line {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .role h3 {
+      margin: 0;
+      font-size: 1.25rem;
+    }
+
+    .role time,
+    .role .location {
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .role ul {
+      margin: 0;
+      padding-left: 1.15rem;
+      color: var(--muted);
+    }
+
+    .role li + li {
+      margin-top: 0.5rem;
+    }
+
+    .work-card {
+      display: flex;
+      min-height: 250px;
+      flex-direction: column;
+    }
+
+    .work-card .label {
+      margin-bottom: 1.1rem;
+      color: var(--teal);
+      font-size: 0.76rem;
+      font-weight: 850;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .work-card h3 {
+      font-size: 1.35rem;
+    }
+
+    .work-card .link {
+      margin-top: auto;
+      padding-top: 1.4rem;
+      color: var(--blue);
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .work-card .link:hover {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .credentials {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .credential {
+      border-top: 2px solid var(--teal);
+    }
+
+    .credential small {
+      display: block;
+      margin-bottom: 0.45rem;
+      color: var(--muted);
+      font-weight: 750;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .contact-panel {
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 2rem;
+      align-items: center;
+      border: 1px solid rgba(78, 224, 193, 0.3);
+      border-radius: 28px;
+      padding: clamp(1.6rem, 5vw, 3.5rem);
+      background:
+        linear-gradient(130deg, rgba(65, 155, 239, 0.14), rgba(58, 204, 175, 0.12)),
+        var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .contact-panel p {
+      max-width: 650px;
+      margin: 1rem 0 0;
+      color: var(--muted);
+    }
+
+    .contact-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 2rem 0 3rem;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    @media (max-width: 780px) {
+      .menu-button {
+        display: inline-flex;
+      }
+
+      .nav-links {
+        position: absolute;
+        left: 1.25rem;
+        right: 1.25rem;
+        top: 64px;
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 1rem;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .hero {
+        padding-top: 5.5rem;
+      }
+
+      .metrics,
+      .stack-grid,
+      .work-grid,
+      .credentials,
+      .section-head,
+      .contact-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .metrics {
+        margin-top: 3rem;
+      }
+
+      section {
+        padding: 4rem 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="welcome-screen" id="welcomeScreen">
-        <div class="welcome-content">
-            <h1 class="welcome-name">Chandra Sai Ettneni</h1>
-            <p class="welcome-role">AI & Data Analyst | Machine Learning Enthusiast</p>
-            <button class="enter-btn" id="enterBtn">Click Me! 🚀</button>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="#top" aria-label="Chandrasai Ettneni home">Chandrasai<span>.</span></a>
+      <button class="menu-button" type="button" aria-expanded="false" aria-controls="nav-links">Menu</button>
+      <nav class="nav-links" id="nav-links" aria-label="Primary navigation">
+        <a href="#about">About</a>
+        <a href="#experience">Experience</a>
+        <a href="#work">Work</a>
+        <a href="#credentials">Credentials</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="container">
+        <p class="eyebrow">Data Engineer · St. Louis, Missouri</p>
+        <h1>Building data systems people can <span class="gradient">trust.</span></h1>
+        <p class="hero-copy">
+          I design production ETL/ELT pipelines, cloud data platforms, and governed analytical models for reporting, analytics, machine learning, and AI. My focus is simple: reliable data, clear ownership, and measurable business outcomes.
+        </p>
+        <div class="hero-meta" aria-label="Professional focus">
+          <span class="pill">4+ years in data & analytics</span>
+          <span class="pill">AWS Certified Data Engineer</span>
+          <span class="pill">Open to U.S. opportunities</span>
         </div>
-    </div>
-
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loading-logo">
-            <div class="logo-outer"></div>
-            <div class="logo-inner">CS</div>
+        <div class="actions">
+          <a class="button primary" href="mailto:chandrasaiettneni@gmail.com">Email me</a>
+          <a class="button" href="https://www.linkedin.com/in/chandrasai-ettneni/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <a class="button" href="https://github.com/Chanduuu21" target="_blank" rel="noopener noreferrer">GitHub</a>
         </div>
-        <p class="loading-text">Loading Portfolio...</p>
+
+        <div class="metrics" aria-label="Selected career outcomes">
+          <article class="metric">
+            <strong>97%</strong>
+            <span>reporting runtime improvement, from approximately 6 hours to 15 minutes</span>
+          </article>
+          <article class="metric">
+            <strong>40%</strong>
+            <span>reduction in downstream data incidents through automated validation controls</span>
+          </article>
+          <article class="metric">
+            <strong>500K+</strong>
+            <span>industrial IoT sensor records prepared for predictive maintenance analytics</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">About</p>
+            <h2>Engineering beyond the pipeline.</h2>
+          </div>
+          <div class="section-intro">
+            <p>
+              I work across the complete data-product lifecycle—from source analysis and ingestion to transformation, validation, deployment, monitoring, and stakeholder adoption. My experience spans enterprise technology, manufacturing, and industrial robotics.
+            </p>
+            <p>
+              I care about the operational details that make data products dependable: idempotency, schema evolution, testing, lineage, observability, recovery, security, performance, and documentation.
+            </p>
+          </div>
+        </div>
+
+        <div class="stack-grid">
+          <article class="card">
+            <h3>Pipelines & transformation</h3>
+            <p>Batch, incremental, streaming, and API ingestion with reusable, testable transformation patterns.</p>
+            <div class="tags">
+              <span class="tag">Python</span>
+              <span class="tag">SQL</span>
+              <span class="tag">PySpark</span>
+              <span class="tag">Airflow</span>
+              <span class="tag">dbt</span>
+              <span class="tag">Kafka</span>
+            </div>
+          </article>
+          <article class="card">
+            <h3>Cloud data platforms</h3>
+            <p>Lakehouse and warehouse solutions built for reliability, governed access, query performance, and cost awareness.</p>
+            <div class="tags">
+              <span class="tag">Databricks</span>
+              <span class="tag">Snowflake</span>
+              <span class="tag">AWS</span>
+              <span class="tag">Azure</span>
+              <span class="tag">GCP</span>
+              <span class="tag">Delta Lake</span>
+            </div>
+          </article>
+          <article class="card">
+            <h3>Data modeling & quality</h3>
+            <p>Trusted dimensional models with clear grain, shared definitions, freshness expectations, and automated controls.</p>
+            <div class="tags">
+              <span class="tag">Star schema</span>
+              <span class="tag">SCD Type 1/2</span>
+              <span class="tag">Data marts</span>
+              <span class="tag">Validation</span>
+              <span class="tag">Lineage</span>
+              <span class="tag">Observability</span>
+            </div>
+          </article>
+          <article class="card">
+            <h3>Delivery & consumption</h3>
+            <p>Versioned deployments and curated datasets that support BI, self-service analytics, ML, and AI applications.</p>
+            <div class="tags">
+              <span class="tag">Git</span>
+              <span class="tag">CI/CD</span>
+              <span class="tag">Docker</span>
+              <span class="tag">Terraform</span>
+              <span class="tag">Power BI</span>
+              <span class="tag">MLflow</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="experience">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Experience</p>
+            <h2>From source systems to business decisions.</h2>
+          </div>
+          <p class="section-intro">
+            Hands-on work across data engineering, analytics engineering, business intelligence, predictive modeling, data quality, and production support.
+          </p>
+        </div>
+
+        <div class="timeline">
+          <article class="role">
+            <div class="role-line">
+              <div>
+                <h3>Data Engineer · Honeywell</h3>
+                <span class="location">St. Louis, Missouri</span>
+              </div>
+              <time datetime="2025-01">Jan 2025–Present</time>
+            </div>
+            <ul>
+              <li>Build and support production ETL/ELT pipelines across APIs, relational databases, files, and cloud data platforms.</li>
+              <li>Automated a recurring reporting workflow from approximately 6 hours to 15 minutes while improving traceability and repeatability.</li>
+              <li>Implemented validation, alerting, dimensional models, and monitoring controls that improved reliability for downstream consumers.</li>
+            </ul>
+          </article>
+
+          <article class="role">
+            <div class="role-line">
+              <div>
+                <h3>Senior Data Analyst · Stonedge Technologies and Robotics</h3>
+                <span class="location">India</span>
+              </div>
+              <time datetime="2021-10">Oct 2021–Dec 2023</time>
+            </div>
+            <ul>
+              <li>Built Python and SQL ELT workflows for industrial IoT, operations, CRM, support, billing, and product-use data.</li>
+              <li>Prepared 500K+ sensor records and time-series features for predictive maintenance work that helped reduce unplanned downtime by 15%.</li>
+              <li>Delivered dimensional datasets, Power BI dashboards, and customer analytics that connected technical findings to operational and revenue decisions.</li>
+            </ul>
+          </article>
+
+          <article class="role">
+            <div class="role-line">
+              <div>
+                <h3>Data Analyst · Stonedge Technologies and Robotics</h3>
+                <span class="location">India</span>
+              </div>
+              <time datetime="2021-04">Apr 2021–Oct 2021</time>
+            </div>
+            <ul>
+              <li>Prepared and validated robotics and manufacturing datasets using SQL, Python, Pandas, and repeatable quality checks.</li>
+              <li>Supported Power BI reporting, KPI validation, exploratory analysis, source-to-target reconciliation, and stakeholder requests.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="work">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Selected work</p>
+            <h2>Problems solved, with the noise removed.</h2>
+          </div>
+          <p class="section-intro">
+            Professional examples are summarized without proprietary code or sensitive business details. The academic repository is publicly available and reproducible.
+          </p>
+        </div>
+
+        <div class="work-grid">
+          <article class="card work-card">
+            <span class="label">Enterprise data engineering</span>
+            <h3>Reporting workflow modernization</h3>
+            <p>Replaced manual exports, spreadsheet joins, repeated business rules, and email handoffs with an orchestrated Python, SQL, dbt, and Airflow workflow with validation, reconciliation, and alerting.</p>
+            <div class="tags">
+              <span class="tag">Python</span>
+              <span class="tag">SQL</span>
+              <span class="tag">Airflow</span>
+              <span class="tag">dbt</span>
+              <span class="tag">Data quality</span>
+            </div>
+          </article>
+
+          <article class="card work-card">
+            <span class="label">Industrial analytics</span>
+            <h3>Predictive maintenance data foundation</h3>
+            <p>Built repeatable ingestion, cleansing, validation, and time-series feature workflows for equipment telemetry, operating context, alarms, and maintenance events.</p>
+            <div class="tags">
+              <span class="tag">IoT</span>
+              <span class="tag">Python</span>
+              <span class="tag">SQL</span>
+              <span class="tag">Time series</span>
+              <span class="tag">MLflow</span>
+            </div>
+          </article>
+
+          <article class="card work-card">
+            <span class="label">Academic project</span>
+            <h3>AI Recruitment Dashboard data generator</h3>
+            <p>Creates deterministic synthetic candidate, job, application, skill, recruiter, match, and system-metric datasets for Power BI recruitment analytics. Includes integrity checks, automated tests, and CI.</p>
+            <div class="tags">
+              <span class="tag">Python</span>
+              <span class="tag">Pandas</span>
+              <span class="tag">Data modeling</span>
+              <span class="tag">Power BI</span>
+              <span class="tag">CI</span>
+            </div>
+            <a class="link" href="https://github.com/Chanduuu21/AI-Recruitment-Dashboard" target="_blank" rel="noopener noreferrer">View repository →</a>
+          </article>
+
+          <article class="card work-card">
+            <span class="label">Data reliability</span>
+            <h3>Validation and observability controls</h3>
+            <p>Designed checks for completeness, uniqueness, referential integrity, freshness, schema drift, reconciliation, and anomalous volumes, with actionable alerts and quarantine paths.</p>
+            <div class="tags">
+              <span class="tag">Testing</span>
+              <span class="tag">Observability</span>
+              <span class="tag">Lineage</span>
+              <span class="tag">SLA monitoring</span>
+              <span class="tag">Incident response</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="credentials">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Credentials</p>
+            <h2>Education and certification.</h2>
+          </div>
+          <p class="section-intro">
+            Graduate study in information systems, backed by cloud data engineering certification and production experience.
+          </p>
+        </div>
+
+        <div class="credentials">
+          <article class="card credential">
+            <small>Education</small>
+            <h3>M.S. in Information Systems</h3>
+            <p>Saint Louis University · Jan 2024–Dec 2025 · GPA 3.89/4.0</p>
+          </article>
+          <article class="card credential">
+            <small>Certification</small>
+            <h3>AWS Certified Data Engineer – Associate</h3>
+            <p>Data ingestion, transformation, orchestration, operations, security, and governance on AWS.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="container">
+        <div class="contact-panel">
+          <div>
+            <p class="eyebrow">Contact</p>
+            <h2>Let’s build dependable data products.</h2>
+            <p>I am open to Data Engineer, Analytics Engineer, Cloud Data Engineer, Data Platform Engineer, and closely related opportunities across the United States.</p>
+          </div>
+          <div class="contact-actions">
+            <a class="button primary" href="mailto:chandrasaiettneni@gmail.com">chandrasaiettneni@gmail.com</a>
+            <a class="button" href="https://www.linkedin.com/in/chandrasai-ettneni/" target="_blank" rel="noopener noreferrer">Connect on LinkedIn</a>
+            <a class="button" href="https://github.com/Chanduuu21" target="_blank" rel="noopener noreferrer">Explore GitHub</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <span>© <span id="year">2026</span> Chandrasai Ettneni</span>
+      <span>Built as a fast, accessible static site on GitHub Pages.</span>
     </div>
+  </footer>
 
-    <div class="main-content" id="mainContent">
-        <nav>
-            <div class="container">
-                <div class="logo">CS</div>
-                <ul class="nav-links">
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#skills">Skills</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </div>
-        </nav>
+  <script>
+    const menuButton = document.querySelector(".menu-button");
+    const navLinks = document.querySelector(".nav-links");
 
-        <section class="hero">
-            <div class="container">
-                <div class="hero-content">
-                    <div class="hero-emoji">👋</div>
-                    <div class="hero-subtitle">AI & Data Analyst</div>
-                    <h1 class="hero-title">
-                        Hi, I'm <span class="gradient-text">Chandra Sai</span><br>
-                        Turning Data into Insights
-                    </h1>
-                    <p class="hero-description">
-                        Master's student in Information Systems specializing in AI & Data Analytics with 3+ years of experience in data analysis, machine learning, and business intelligence.
-                    </p>
-                    <div class="cta-buttons">
-                        <a href="#contact" class="btn btn-primary">Get In Touch 📧</a>
-                        <a href="#skills" class="btn btn-outline">View Skills 🔥</a>
-                    </div>
-                </div>
-            </div>
-        </section>
+    menuButton.addEventListener("click", function () {
+      const isOpen = navLinks.classList.toggle("open");
+      menuButton.setAttribute("aria-expanded", String(isOpen));
+    });
 
-        <section id="about">
-            <div class="container">
-                <h2 class="section-title"><span class="section-emoji">👨‍💻</span>About <span class="gradient-text">Me</span></h2>
-                <div class="about-content">
-                    <div class="about-text">
-                        <p>I'm a passionate AI & Data Analyst currently pursuing my Master's in Information Systems at Saint Louis University with a 3.89 GPA.</p>
-                        <p>I specialize in transforming complex datasets into actionable insights through advanced analytics, machine learning, and interactive visualizations.</p>
-                    </div>
-                    <div class="stats">
-                        <div class="stat-item">
-                            <div class="stat-emoji">⏱️</div>
-                            <div class="stat-number">2+</div>
-                            <div class="stat-label">Years Experience</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-emoji">🎯</div>
-                            <div class="stat-number">15+</div>
-                            <div class="stat-label">Projects</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-emoji">🏆</div>
-                            <div class="stat-number">3.89</div>
-                            <div class="stat-label">GPA</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+    navLinks.querySelectorAll("a").forEach(function (link) {
+      link.addEventListener("click", function () {
+        navLinks.classList.remove("open");
+        menuButton.setAttribute("aria-expanded", "false");
+      });
+    });
 
-        <section id="skills">
-            <div class="container">
-                <h2 class="section-title"><span class="section-emoji">⚡</span>Technical <span class="gradient-text">Skills</span></h2>
-                <div class="skills-train-wrapper">
-                    <div class="skills-train">
-                        <div class="skill-badge"><div class="skill-badge-icon">🐍</div><div class="skill-badge-name">Python</div><div class="skill-badge-category">Programming</div></div>
-                        <div class="skill-badge"><div class="skill-badge-icon">☕</div><div class="skill-badge-name">Java</div><div class="skill-badge-category">Programming</div></div>
-                        <div class="skill-badge"><div class="skill-badge-icon">🗃️</div><div class="skill-badge-name">SQL</div><div class="skill-badge-category">Database</div></div>
-                        <div class="skill-badge"><div class="skill-badge-icon">📊</div><div class="skill-badge-name">Power BI</div><div class="skill-badge-category">Visualization</div></div>
-                        <div class="skill-badge"><div class="skill-badge-icon">📈</div><div class="skill-badge-name">Tableau</div><div class="skill-badge-category">Visualization</div></div>
-                        <div class="skill-badge"><div class="skill-badge-icon">🤖</div><div class="skill-badge-name">ML</div><div class="skill-badge-category">AI</div></div>
-                        <div class="skill-badge"><div class="skill-badge-icon">🧠</div><div class="skill-badge-name">TensorFlow</div><div class="skill-badge-category">Deep Learning</div></div>
-                        <div class="skill-badge"><div class="skill-badge-icon">☁️</div><div class="skill-badge-name">AWS</div><div class="skill-badge-category">Cloud</div></div>
-                        <div class="skill-badge"><div class="skill-badge-icon">🐍</div><div class="skill-badge-name">Python</div><div class="skill-badge-category">Programming</div></div>
-                        <div class="skill-badge"><div class="skill-badge-icon">☕</div><div class="skill-badge-name">Java</div><div class="skill-badge-category">Programming</div></div>
-                        <div class="skill-badge"><div class="skill-badge-icon">🗃️</div><div class="skill-badge-name">SQL</div><div class="skill-badge-category">Database</div></div>
-                        <div class="skill-badge"><div class="skill-badge-icon">📊</div><div class="skill-badge-name">Power BI</div><div class="skill-badge-category">Visualization</div></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="contact">
-            <div class="container">
-                <h2 class="section-title"><span class="section-emoji">📬</span>Get In <span class="gradient-text">Touch</span></h2>
-                <div class="contact-content">
-                    <p class="hero-description">I'm always open to new opportunities and collaborations!</p>
-                    <div class="contact-info">
-                        <div class="contact-item">
-                            <div class="contact-icon">📧</div>
-                            <div class="contact-text"><a href="mailto:chandrasaiettneni@gmail.com">chandrasaiettneni@gmail.com</a></div>
-                        </div>
-                        <div class="contact-item">
-                            <div class="contact-icon">📱</div>
-                            <div class="contact-text">+1 314-575-7835</div>
-                        </div>
-                        <div class="contact-item">
-                            <div class="contact-icon">💼</div>
-                            <div class="contact-text"><a href="https://linkedin.com/in/chandra-sai-ettneni" target="_blank">LinkedIn</a></div>
-                        </div>
-                    </div>
-                    <div class="cta-buttons">
-                        <a href="mailto:chandrasaiettneni@gmail.com" class="btn btn-primary">Send Email ✉️</a>
-                        <a href="https://linkedin.com/in/chandra-sai-ettneni" class="btn btn-outline">Connect 🔗</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <footer>
-            <div class="container">
-                <p>Made with 💜 by Chandra Sai Ettneni &copy; 2025</p>
-            </div>
-        </footer>
-    </div>
-
-    <script>
-        document.getElementById('enterBtn').addEventListener('click', function() {
-            document.getElementById('welcomeScreen').classList.add('hidden');
-            document.getElementById('loadingScreen').classList.add('active');
-            
-            setTimeout(function() {
-                document.getElementById('loadingScreen').classList.add('hidden');
-                document.getElementById('mainContent').classList.add('visible');
-            }, 1800);
-        });
-    </script>
+    document.getElementById("year").textContent = String(new Date().getFullYear());
+  </script>
 </body>
 </html>
